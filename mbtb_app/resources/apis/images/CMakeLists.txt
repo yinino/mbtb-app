@@ -7,8 +7,12 @@ set(CMAKE_CXX_STANDARD 14)
 # Configure required libraries
 if(UNIX) # Darwin or Linux
 
-    find_package(Boost REQUIRED COMPONENTS system thread log program_options chrono)
-    find_package(Threads REQUIRED)
+if(Linux)
+    find_package(Openssl REQUIRED)
+    find_package(zlib REQUIRED)
+    find_package(cppresksdk REQUIRED)
+    find_package(MYSQLCPPCONN REQUIRED)
+endif()
 
     if(APPLE)
         set( OPENSSL_ROOT_DIR "/usr/local/opt/openssl/")
@@ -66,6 +70,13 @@ set(HEADER_SEARCH_PATHS ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR}
                         ${AUTH_INCLUDE_DIR}
         )
 
+set(Linux_SEARCH_PATHS ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR}
+                        ${REST_INCLUDE_DIR} ${CZI_IMAGE_INCLUDE_DIR}
+                        ${MYSQLCONN_INCLUDE_DIR} ${DB_INCLUDE_DIR}
+                        ${AUTH_INCLUDE_DIR}
+        )
+
+
 # display msg: header file path
 message(CZI_IMAGE " ${CZI_IMAGE_INCLUDE_DIR}")
 message(REST " ${REST_INCLUDE_DIR}")
@@ -85,8 +96,13 @@ message(BOOST_LIBS " ${Boost_LIBRARIES}")
 message(MYSQLCONN_LIBS " ${MYSQLCONN_LIBS}")
 message(LIBRARIES_SEARCH_PATHS " ${LIBRARIES_SEARCH_PATHS}")
 
+if(Linux)
+    set(LIBRARIES_SEARCH_PATHS ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${ZIP_LIBRARY} ${MYSQLCONN_LIBS})
+endif()
+
 
 include_directories(${HEADER_SEARCH_PATHS})
+include_directories(${Linux_SEARCH_PATHS})
 
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} cpprestsdk::cpprest)
@@ -94,4 +110,9 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework Security")
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_SEARCH_PATHS})
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-W1, -F/Library/Frameworks")
+endif ()
+
+if (Linux)
+    target_link_libraries(${PROJECT_NAME} cpprestsdk::cpprest)
+    target_link_libraries(${PROJECT_NAME} ${LIBRARIES_SEARCH_PATHS})
 endif ()
