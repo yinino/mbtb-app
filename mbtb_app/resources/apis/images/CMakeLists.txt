@@ -70,18 +70,10 @@ set(HEADER_SEARCH_PATHS ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR}
                         ${AUTH_INCLUDE_DIR}
         )
 
-set(Linux_SEARCH_PATHS ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR}
-                        ${REST_INCLUDE_DIR} ${CZI_IMAGE_INCLUDE_DIR}
-                        ${MYSQLCONN_INCLUDE_DIR} ${DB_INCLUDE_DIR}
-                        ${AUTH_INCLUDE_DIR}
-        )
-
-
 # display msg: header file path
 message(CZI_IMAGE " ${CZI_IMAGE_INCLUDE_DIR}")
 message(REST " ${REST_INCLUDE_DIR}")
 message(MYSQLCONN " ${MYSQLCONN_INCLUDE_DIR}")
-
 
 
 # library search
@@ -96,13 +88,8 @@ message(BOOST_LIBS " ${Boost_LIBRARIES}")
 message(MYSQLCONN_LIBS " ${MYSQLCONN_LIBS}")
 message(LIBRARIES_SEARCH_PATHS " ${LIBRARIES_SEARCH_PATHS}")
 
-if(Linux)
-    set(LIBRARIES_SEARCH_PATHS ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${ZIP_LIBRARY} ${MYSQLCONN_LIBS})
-endif()
-
 
 include_directories(${HEADER_SEARCH_PATHS})
-include_directories(${Linux_SEARCH_PATHS})
 
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} cpprestsdk::cpprest)
@@ -113,6 +100,13 @@ if (APPLE)
 endif ()
 
 if (Linux)
+    set(LINUX_SEARCH_PATHS ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR}
+                        ${REST_INCLUDE_DIR} ${CZI_IMAGE_INCLUDE_DIR}
+                        ${MYSQLCONN_INCLUDE_DIR} ${DB_INCLUDE_DIR}
+                        ${AUTH_INCLUDE_DIR}
+        )
+    set(LIBRARIES_SEARCH_PATHS ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${ZIP_LIBRARY} ${MYSQLCONN_LIBS})
+    include_directories(${LINUX_SEARCH_PATHS})
     target_link_libraries(${PROJECT_NAME} cpprestsdk::cpprest)
     target_link_libraries(${PROJECT_NAME} ${LIBRARIES_SEARCH_PATHS})
 endif ()
