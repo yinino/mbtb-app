@@ -2,37 +2,26 @@
 FROM ubuntu:18.04
 
 # Update apps on the base image
-RUN apt-get -y update && apt-get install -y
+#RUN apt-get -y update && apt-get install -y
 
-# Install the Clang compiler
-RUN apt-get -y install clang
+RUN apt-get update
 
-# Install cmake
-RUN apt-get -y install cmake
+# Install build dependencies
+RUN apt-get -y install clang cmake git openssl libboost-all-dev zlib1g-dev libcpprest-dev mysql-server libmysqlcppconn-dev libgtest-dev libssl-dev nlohmann-json-dev 
 
-# Install git
-RUN apt-get -y install git
 
-# Install openssl
-RUN apt-get -y install openssl
 
-#Install boost
-RUN apt-get -y install libboost-all-dev
+# Copy the current folder which contains C++ source code to the Docker image under /usr/src
+COPY . /usr/src/image-api
+# Specify the working directory
+WORKDIR /usr/src/image-api
 
-#Install zlib
-RUN apt-get -y install zlib1g-dev
+RUN mkdir build \
+    && cd build \
+    && cmake ..
 
-#Install cppresksdk
-RUN apt-get -y install libcpprest-dev
+RUN make 
 
-#Install mysql
-RUN apt-get -y install mysql-server
 
-#Install mysql-connector-c++
-RUN apt-get -y install libmysqlcppconn-dev
-
-#Install cpp-jwt
-RUN apt-get -y install libgtest-dev libssl-dev 
-
-#Install nlohmann
-RUN apt-get -y install nlohmann-json-dev
+#expose port 8200
+#EXPOSE 8200

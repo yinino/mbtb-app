@@ -49,7 +49,7 @@ endif()
 
 
 # source files
-add_executable(${PROJECT_NAME}  ./src/CZIImage.cpp
+add_executable(${PROJECT_NAME}  src/CZIImage.cpp
                                 ./src/czi_image/CZIController.cpp ./src/czi_image/TissueMetaData.cpp
                                 ./src/rest_base/Controller.cpp ./src/rest_base/Router.cpp
                                 ./src/db/DBConnection.cpp ./src/db/DBTissueMetaData.cpp ./src/db/DBAdminAuthentication.cpp ./src/db/DBUserAuthentication.cpp
