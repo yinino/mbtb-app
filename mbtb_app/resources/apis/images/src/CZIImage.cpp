@@ -2,6 +2,7 @@
 // Created by Nirav Jadeja on 2020-04-03.
 //
 #include <iostream>
+#include <Configuration.h>
 #include <UserInterruptHandler.h>
 #include <Router.h>
 
@@ -13,11 +14,13 @@ int main(int argc, const char * argv[]) {
     InterruptHandler::hookSIGINT();
 
     Router router;
-    router.setEndpoint("http://127.0.0.1:7000/");  // setting server endpoint or base url here
+    std::string uri = "http://" + Configuration::hostName + ":" + Configuration::port + "/";  // server base url
+    router.setEndpoint(uri);
 
     try {
         router.accept().wait();
-        cout << "CZI Image server started at: " << router.endpoint() << '\n';
+        cout << "*********" << endl;
+        cout << "CZI Image server started at: " << router.endpoint() << endl;
 
         InterruptHandler::waitForUserInterrupt();
 
